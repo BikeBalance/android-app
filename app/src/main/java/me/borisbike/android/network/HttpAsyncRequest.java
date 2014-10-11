@@ -2,20 +2,15 @@ package me.borisbike.android.network;
 
 import android.os.AsyncTask;
 
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 
 /**
  * new
  */
 
-public class HttpAsyncPost extends AsyncTask<String, Integer, String> {
+public class HttpAsyncRequest extends AsyncTask<String, Integer, String> {
     private OnAsyncTaskCompleted listener;
 
-    public HttpAsyncPost(OnAsyncTaskCompleted listener) {
+    public HttpAsyncRequest(OnAsyncTaskCompleted listener) {
         this.listener = listener;
     }
     //required methods
@@ -24,8 +19,8 @@ public class HttpAsyncPost extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... params) {
         String result = "";
         try {
-            HttpPost poster = new HttpPost(params[1]);
-            result = poster.postData(params[0]);
+            HttpRequest poster = new HttpRequest(params[1]);
+            result = poster.postData(params[0], params[2]);
             return result;
 
             //Toast.makeText(getApplicationContext(), "got a response", Toast.LENGTH_LONG).show();

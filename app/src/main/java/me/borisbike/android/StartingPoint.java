@@ -4,14 +4,29 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import me.borisbike.android.helpers.ToastGenerator;
+import me.borisbike.android.network.HttpAsyncRequest;
+import me.borisbike.android.network.OnAsyncTaskCompleted;
 
 
-public class StartingPoint extends Activity {
+public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
+    private TextView debugView;
+    private ToastGenerator toaster;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starting_point);
+
+        debugView = (TextView)findViewById(R.id.debug_area);
+        toaster = new ToastGenerator(StartingPoint.this);
+
+        d("Loading...");
+
+        new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+
     }
 
 
@@ -32,5 +47,14 @@ public class StartingPoint extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void d(String str){
+        debugView.append(str+"\n");
+    }
+
+    @Override
+    public void onTaskCompleted(Object result) {
+        d((String)result.toString());
     }
 }

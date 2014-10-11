@@ -9,30 +9,34 @@ import java.net.URL;
 /**
  * Created by mani on 29/09/14.
  */
-public class HttpPost {
+public class HttpRequest {
 
     private final String BASE_URL = "http://borisbike.me:8000/";
 
     private String endpoint;
 
-    public HttpPost(String endpoint){
+    public HttpRequest(String endpoint){
         this.endpoint = endpoint;
     }
 
-    public String postData(String calls) throws Exception {
+    public String postData(String calls, String requestType) throws Exception {
         URL url = new URL(BASE_URL + endpoint);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000);
         conn.setConnectTimeout(60000);
-        conn.setRequestMethod("POST");
-        conn.setDoOutput(true);
+        conn.setRequestMethod(requestType); //POST or GET - should have enums #fuckitshipit
         conn.setDoInput(true);
         conn.setUseCaches(false);
         conn.setAllowUserInteraction(false);
         conn.setRequestProperty("Content-Type", "application/json");
 
-        DataOutputStream dataOut = new DataOutputStream(conn.getOutputStream());
-        dataOut.writeBytes(calls.toString());
+        if(requestType.equals("POST")){
+            conn.setDoOutput(true);
+            DataOutputStream dataOut = new DataOutputStream(conn.getOutputStream());
+            dataOut.writeBytes(calls.toString());
+        } else {
+            conn.setDoOutput(false);
+        }
 
         conn.connect();
         InputStream is = conn.getInputStream();

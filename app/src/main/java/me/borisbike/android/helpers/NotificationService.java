@@ -1,4 +1,4 @@
-package me.borisbike.android.helpes;
+package me.borisbike.android.helpers;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

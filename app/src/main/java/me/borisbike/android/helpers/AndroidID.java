@@ -1,4 +1,4 @@
-package me.borisbike.android.helpes;
+package me.borisbike.android.helpers;
 
 /**
  * Created by mani on 11/10/14.

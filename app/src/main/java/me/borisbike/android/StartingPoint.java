@@ -43,7 +43,7 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
         d("Loading...");
 
         //get the stations data
-        if(true || sharedPref.toSync()){
+        if(sharedPref.toSync()){
             d("Getting latest stations info...");
             //get the stations data
            new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");

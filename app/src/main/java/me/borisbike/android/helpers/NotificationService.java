@@ -12,9 +12,7 @@ import android.util.Log;
 import me.borisbike.android.R;
 import me.borisbike.android.ShowSuggestionsActivity;
 
-/**
- * Created by mani on 11/10/14.
- */
+
 
 public class NotificationService extends Service {
     final int NOTIFICATION_ID = 1234599;

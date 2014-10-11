@@ -20,6 +20,15 @@
             android:name=".ShowSuggestionsActivity"
             android:label="@string/title_activity_show_suggestions" >
         </activity>
+
+        <provider android:name="me.borisbike.android.stations.StationsProvider"
+            android:authorities="me.borisbike.android.Stations" android:exported="false"
+            android:label="Bike Stations"
+            />
     </application>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- required for geo fencing -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
 </manifest>

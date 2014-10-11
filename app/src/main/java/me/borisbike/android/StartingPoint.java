@@ -1,21 +1,34 @@
 package me.borisbike.android;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import me.borisbike.android.helpers.SharedPref;
 import me.borisbike.android.helpers.ToastGenerator;
 import me.borisbike.android.network.HttpAsyncRequest;
 import me.borisbike.android.network.OnAsyncTaskCompleted;
+import me.borisbike.android.stations.StationsDbHelper;
+import me.borisbike.android.stations.StationsMeta;
+import me.borisbike.android.stations.StationsProvider;
 
 
 public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
     private TextView debugView;
     private ToastGenerator toaster;
     private SharedPref sharedPref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +43,11 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
         d("Loading...");
 
         //get the stations data
-        if(sharedPref.toSync()){
+        if(true || sharedPref.toSync()){
             d("Getting latest stations info...");
             //get the stations data
-            new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+           new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+
         } else {
 
         }
@@ -66,12 +80,52 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
     @Override
     public void onTaskCompleted(Object result) {
         //RECREATE TABLE
-        d((String)result.toString());
-        //TODO SAVE DATA IN DATABASE
+        StationsProvider stationsProvider = new StationsProvider();
+        stationsProvider.createHelper(StartingPoint.this);
+        d("Got a response");
+        try {
+            JSONObject resultData = new JSONObject((String)result);
 
-        d("Got latest station info");
-        //update last sync time
-        sharedPref.setLastStationsDownload();
+            JSONArray stations = resultData.getJSONArray("Station");
+
+
+            for(int i=0; i < stations.length(); i++){
+                JSONObject data = stations.getJSONObject(i);
+
+                Boolean installed = data.getBoolean("Installed");
+                String name = data.getString("Name");
+                Double lon = data.getDouble("Long");
+                Double lat = data.getDouble("Lat");
+                Boolean locked = data.getBoolean("Locked");
+                Integer terminalName = Integer.parseInt(data.getString("TerminalName"));
+
+                if(installed == true && locked == false){
+                    ContentValues val = new ContentValues();
+                    val.put(StationsMeta.StationsTable.LAT, lat);
+                    val.put(StationsMeta.StationsTable.LON, lon);
+                    val.put(StationsMeta.StationsTable.NAME, name);
+                    val.put(StationsMeta.StationsTable.TERMINAL_NAME, terminalName);
+                    stationsProvider.insert(StationsMeta.CONTENT_URI, val);
+
+                    Log.d("me.borisbike","Saved in database: \nNAME: "+name+"\nLAT: "+lat+" :: LON: "+lon+" \nTERMINAL NAME: "+terminalName);
+                }
+
+            }
+
+            d("Got latest station info");
+            //update last sync time
+            sharedPref.setLastStationsDownload();
+
+            setupGeofencing();
+        } catch (Exception e){
+            toaster.show("Failed to get latest stations info");
+        }
+
+    }
+
+
+    public void setupGeofencing(){
+        //TODO START A GEOSYNC BACKGROUND SERVICE WITH AN INTENT
     }
 
 

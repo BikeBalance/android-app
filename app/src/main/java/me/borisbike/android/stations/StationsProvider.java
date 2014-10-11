@@ -87,7 +87,7 @@ public class StationsProvider extends ContentProvider
         if(rowId > 0) {
             Uri articleUri = ContentUris.withAppendedId(StationsMeta.CONTENT_URI, rowId);
             ctx.getContentResolver().notifyChange(articleUri, null);
-            Log.d("clarity", "SAVED SOMETHING IN DB YAY");
+            Log.d("me.borisbike.android", "SAVED SOMETHING IN DB YAY");
             return articleUri;
         }
         throw new IllegalArgumentException("[Insert](02)Unknown URI: " + uri);

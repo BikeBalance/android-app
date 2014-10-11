@@ -15,8 +15,8 @@ public class StationsMeta {
     public static final String DATABASE_NAME = "stations.db";
     public static final int DATABASE_VERSION = 1;
 
-    public static final String CONTENT_TYPE_ARTICLES_LIST = "vnd.android.cursor.dir/vnd.borisbike.activities";
-    public static final String CONTENT_TYPE_ARTICLE_ONE = "vnd.android.cursor.item/vnd.borisbike.activities";
+    public static final String CONTENT_TYPE_ARTICLES_LIST = "vnd.android.cursor.dir/vnd.borisbike.stations";
+    public static final String CONTENT_TYPE_ARTICLE_ONE = "vnd.android.cursor.item/vnd.borisbike.stations";
 
     public class StationsTable implements BaseColumns {
         private StationsTable() { }

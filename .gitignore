@@ -24,3 +24,7 @@ proguard/
 
 # Log Files
 *.log
+
+# Stuff that was being modified when project opened in Android Studio.
+.idea/
+app/app.iml

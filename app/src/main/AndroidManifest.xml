@@ -27,6 +27,7 @@
             />
     </application>
 
+    <uses-sdk android:targetSdkVersion="19" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/> <!-- required for geo fencing -->
     <uses-permission android:name="android.permission.INTERNET" />
 

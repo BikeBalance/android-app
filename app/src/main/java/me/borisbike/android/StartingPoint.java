@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import me.borisbike.android.helpers.SharedPref;
 import me.borisbike.android.helpers.ToastGenerator;
 import me.borisbike.android.network.HttpAsyncRequest;
 import me.borisbike.android.network.OnAsyncTaskCompleted;
@@ -14,6 +15,7 @@ import me.borisbike.android.network.OnAsyncTaskCompleted;
 public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
     private TextView debugView;
     private ToastGenerator toaster;
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +24,19 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
 
         debugView = (TextView)findViewById(R.id.debug_area);
         toaster = new ToastGenerator(StartingPoint.this);
+        sharedPref = new SharedPref(StartingPoint.this);
+        debugView.setText("");
 
         d("Loading...");
 
-        new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+        //get the stations data
+        if(sharedPref.toSync()){
+            d("Getting latest stations info...");
+            //get the stations data
+            new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+        } else {
 
+        }
     }
 
 
@@ -55,6 +65,14 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
 
     @Override
     public void onTaskCompleted(Object result) {
+        //RECREATE TABLE
         d((String)result.toString());
+        //TODO SAVE DATA IN DATABASE
+
+        d("Got latest station info");
+        //update last sync time
+        sharedPref.setLastStationsDownload();
     }
+
+
 }

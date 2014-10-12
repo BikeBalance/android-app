@@ -1,7 +1,11 @@
 package me.borisbike.android;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +17,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 
 import me.borisbike.android.helpers.SharedPref;
@@ -28,8 +33,9 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
     private TextView debugView;
     private ToastGenerator toaster;
     private SharedPref sharedPref;
-
-
+    private final Integer GEOFENCE_SERVICE_CODE = 1052;
+    private AlarmManager alarmManager;
+    private final Long SYNC_INTERVAL = 60000*15L;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,17 +48,34 @@ public class StartingPoint extends Activity implements OnAsyncTaskCompleted {
 
         d("Loading...");
 
-        //get the stations data
-        if(sharedPref.toSync()){
-            d("Getting latest stations info...");
-            //get the stations data
-           new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+//        //get the stations data
+//        if(sharedPref.toSync()){
+//            d("Getting latest stations info...");
+//            //get the stations data
+//           new HttpAsyncRequest(StartingPoint.this).execute("", "cycle.json", "GET");
+//
+//        } else {
+//            setupGeofences();
+//        }
 
-        } else {
+       //start an alarm service
 
-        }
     }
 
+    private void setupGeofenceAlarm(){
+        Intent intent = new Intent(StartingPoint.this, GeofencesStartService.class);
+        PendingIntent pIntent = PendingIntent.getService(StartingPoint.this, GEOFENCE_SERVICE_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, 0, SYNC_INTERVAL, pIntent);
+        d("Set up Geofencing updates");
+    }
+
+    private void destroyGeofenceAlarm(){
+        Intent intent = new Intent(StartingPoint.this, GeofencesStartService.class);
+        PendingIntent pIntent = PendingIntent.getService(StartingPoint.this, GEOFENCE_SERVICE_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pIntent);
+        d("Stopping Geofencing updated");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

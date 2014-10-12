@@ -20,10 +20,19 @@ public class StationsDbHelper extends SQLiteOpenHelper {
                     ");"
             ;
 
+    private static final String SQL_QUERY_CREATE_LAT_INDEX = "" +
+            "CREATE INDEX lat_index ON "+StationsMeta.StationsTable.TABLE_NAME+"("+StationsMeta.StationsTable.LAT+");";
+
+    private static final String SQL_QUERY_CREATE_LON_INDEX = "" +
+            "CREATE INDEX lon_index ON "+StationsMeta.StationsTable.TABLE_NAME+"("+StationsMeta.StationsTable.LON+");";
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         this.db = db;
         this.db.execSQL(SQL_QUERY_CREATE);
+        this.db.execSQL(SQL_QUERY_CREATE_LAT_INDEX);
+        this.db.execSQL(SQL_QUERY_CREATE_LON_INDEX);
+
     }
 
     private static final String SQL_QUERY_DROP =

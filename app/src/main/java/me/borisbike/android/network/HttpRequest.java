@@ -11,7 +11,7 @@ import java.net.URL;
  */
 public class HttpRequest {
 
-    private final String BASE_URL = "http://borisbike.me:8000/";
+    private final String BASE_URL = "http://borisbike.me:3000/";
 
     private String endpoint;
 
